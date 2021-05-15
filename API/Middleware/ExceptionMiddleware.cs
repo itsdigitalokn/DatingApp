@@ -11,15 +11,15 @@ namespace API.Middleware
 {
     public class ExceptionMiddleware
     {
+        private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionMiddleware> _logger;
         private readonly IHostEnvironment _env;
-        private readonly RequestDelegate _next;
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, 
             IHostEnvironment env)
         {
-            _next = next;
             _env = env;
             _logger = logger;
+            _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -28,7 +28,7 @@ namespace API.Middleware
             {
                 await _next(context);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 context.Response.ContentType = "application/json";

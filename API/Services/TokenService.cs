@@ -1,15 +1,15 @@
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System;
-using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace API.Services
 {
@@ -20,7 +20,7 @@ namespace API.Services
         public TokenService(IConfiguration config, UserManager<AppUser> userManager)
         {
             _userManager = userManager;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["tokenKey"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
         }
 
         public async Task<string> CreateToken(AppUser user)
@@ -50,6 +50,5 @@ namespace API.Services
 
             return tokenHandler.WriteToken(token);
         }
-
     }
 }

@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
@@ -28,7 +30,6 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-
             if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
 
             var user = _mapper.Map<AppUser>(registerDto);
@@ -43,8 +44,6 @@ namespace API.Controllers
 
             if (!roleResult.Succeeded) return BadRequest(result.Errors);
 
-
-
             return new UserDto
             {
                 Username = user.UserName,
@@ -52,7 +51,6 @@ namespace API.Controllers
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
-
         }
 
         [HttpPost("login")]
@@ -77,7 +75,6 @@ namespace API.Controllers
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
             };
-
         }
 
         private async Task<bool> UserExists(string username)

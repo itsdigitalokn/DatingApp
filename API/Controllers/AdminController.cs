@@ -31,10 +31,11 @@ namespace API.Controllers
                     Roles = u.UserRoles.Select(r => r.Role.Name).ToList()
                 })
                 .ToListAsync();
-                
+
             return Ok(users);
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("edit-roles/{username}")]
         public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
         {
@@ -42,17 +43,17 @@ namespace API.Controllers
 
             var user = await _userManager.FindByNameAsync(username);
 
-            if (user == null) return BadRequest("Could not find user");
+            if (user == null) return NotFound("Could not find user");
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            var results = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
+            var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
 
-            if (!results.Succeeded) return BadRequest("Failed to add to roles");
+            if (!result.Succeeded) return BadRequest("Failed to add to roles");
 
-            results = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
+            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
 
-            if (!results.Succeeded) return BadRequest("Failed to remove from roles");
+            if (!result.Succeeded) return BadRequest("Failed to remove from roles");
 
             return Ok(await _userManager.GetRolesAsync(user));
         }
@@ -63,6 +64,5 @@ namespace API.Controllers
         {
             return Ok("Admins or moderators can see this");
         }
-
     }
 }

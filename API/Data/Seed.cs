@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using API.Entities;
@@ -28,12 +25,12 @@ namespace API.Data
                 new AppRole{Name = "Moderator"},
             };
 
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
                 await roleManager.CreateAsync(role);
             }
-
-            foreach(var user in users)
+            
+            foreach (var user in users)
             {
                 user.UserName = user.UserName.ToLower();
                 await userManager.CreateAsync(user, "Pa$$w0rd");
